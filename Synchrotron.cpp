@@ -37,10 +37,9 @@ Synchrotron::discharge() {
 }
 
 Synchrotron::tick(unsigned long jiffies) {
-  float adj = (float)ticks / (float)tickrate;
-  byte raa = r * adj;
-  byte gaa = g * adj;
-  byte baa = b * adj;
+  byte raa = r * ticks / tickrate;
+  byte gaa = g * ticks / tickrate;
+  byte baa = b * ticks / tickrate;
   byte ra = r - raa;
   byte ga = g - gaa;
   byte ba = b - baa;

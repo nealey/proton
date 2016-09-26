@@ -25,7 +25,7 @@ Synchrotron *sync1;
 #define DEBUG 13
 
 // Inputs
-#define TRIGGER 9
+#define TRIGGER 8
 
 // global time counter
 unsigned long jiffies = 0;
@@ -63,18 +63,34 @@ void loop() {
 
   music->poll(jiffies);
 
-  if (state == 0) {
-    if (new_jiffies > jiffies) {
-      if (trigger) {
+  switch (state) {
+  case 0:
+    if (trigger) {
+      if (music->startPlayingFile("track001.mp3")) {
 	state = 1;
-	music->startPlayingFile("track001.mp3");
 	sync1->charge();
       }
-
-      jiffies = new_jiffies;
-      sync1->tick(jiffies);
-      flashDebug();
     }
+    break;
+  case 1:
+    if (! music->isPlaying()) {
+      if (music->startPlayingFile("track002.mp3")) {
+	state = 4;
+	sync1->standby();
+      }
+    }
+    break;
+  case 4:
+    if (! music->isPlaying()) {
+      state = 0;
+    }
+    break;
+  }
+
+  if (new_jiffies > jiffies) {
+    jiffies = new_jiffies;
+    sync1->tick(jiffies);
+    flashDebug();
   }
 }
 

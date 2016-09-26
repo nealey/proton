@@ -28,6 +28,12 @@ MusicPlayer::startPlayingFile(const char *trackname)
   return musicPlayer->startPlayingFile(trackname);
 }
 
+boolean
+MusicPlayer::isPlaying()
+{
+  return musicPlayer->playingMusic;
+}
+
 void
 MusicPlayer::stopPlaying()
 {

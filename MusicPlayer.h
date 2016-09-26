@@ -9,6 +9,7 @@ public:
   MusicPlayer(int8_t cs, int8_t dcs, int8_t dreq, int8_t cardcs);
   boolean startPlayingFile(const char *trackname);
   void setVolume(uint8_t left, uint8_t right);
+  boolean isPlaying();
   void stopPlaying();
   void poll(unsigned long jiffies);			// Call this once per loop()
 };
