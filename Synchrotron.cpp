@@ -2,6 +2,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "Synchrotron.h"
 
+#define width 6
 #define brightness 255
 
 Synchrotron::Synchrotron(uint16_t n, uint8_t p, neoPixelType t)
@@ -37,18 +38,14 @@ Synchrotron::discharge() {
 }
 
 Synchrotron::tick(unsigned long jiffies) {
-  byte raa = r * ticks / tickrate;
-  byte gaa = g * ticks / tickrate;
-  byte baa = b * ticks / tickrate;
-  byte ra = r - raa;
-  byte ga = g - gaa;
-  byte ba = b - baa;
-
   pxl->clear();
-  pxl->setPixelColor((cur + 1) % npixels, pxl->Color(raa, gaa, baa));
+  for (int i = 0; i < width; i += 1) {
+    pxl->setPixelColor((cur + i) % npixels, pxl->Color(r, g, b));
+  }
   for (int i = 0; i < 4; i += 1) {
     int div = 1 << (2*i);
-    pxl->setPixelColor((cur + npixels - i) % npixels, pxl->Color(ra/div, ga/div, ba/div));
+    pxl->setPixelColor((cur + npixels - i) % npixels, pxl->Color(r/div, g/div, b/div));
+    pxl->setPixelColor((cur + npixels + width + i) % npixels, pxl->Color(r/div, g/div, b/div));
   }
 
   pxl->show();
