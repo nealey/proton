@@ -10,8 +10,13 @@ class Synchrotron {
   int tickrate;	     // How many millis between pixel position changes
   int ticks; // How many ticks have elapsed since last position change
   byte r, g, b;			// Current color
+
+  int transition_length, transition_elapsed;
+  int initial_tickrate, initial_r, initial_g, initial_b;
+  float dtickrate, dr, dg, db;
 public:
   Synchrotron(uint16_t n, uint8_t p=6, neoPixelType t=NEO_GRB + NEO_KHZ800);
+  transition(int duration, int final_tickrate, byte final_r, byte final_g, byte final_b);
   standby();
   charge();
   fire();

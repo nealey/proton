@@ -10,7 +10,7 @@ MusicPlayer::MusicPlayer(int8_t cs, int8_t dcs, int8_t dreq, int8_t cardcs)
 {
   musicPlayer = new Adafruit_VS1053_FilePlayer(cs, dcs, dreq, cardcs);
   musicPlayer->begin();
-  musicPlayer->setVolume(20, 20); // lower = louder
+  musicPlayer->setVolume(1, 1); // lower = louder
   musicPlayer->sineTest(0x44, 500);
   SD.begin(cardcs);
 }

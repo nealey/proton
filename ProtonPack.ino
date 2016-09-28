@@ -65,22 +65,29 @@ void loop() {
 
   switch (state) {
   case 0:
-    if (trigger) {
-      if (music->startPlayingFile("track001.mp3")) {
-	state = 1;
-	sync1->charge();
-      }
+    if (trigger && music->startPlayingFile("track001.mp3")) {
+      state = 1;
+      sync1->charge();
     }
     break;
   case 1:
     if (! music->isPlaying()) {
-      if (music->startPlayingFile("track002.mp3")) {
-	state = 4;
-	sync1->standby();
-      }
+      state = 3;
+    }
+    break;
+  case 3:
+    if (trigger && music->startPlayingFile("track003.mp3")) {
+      state = 4;
+      sync1->fire();
     }
     break;
   case 4:
+    if (! trigger && music->startPlayingFile("track002.mp3")) {
+      state = 5;
+      sync1->discharge();
+    }
+    break;
+  case 5:
     if (! music->isPlaying()) {
       state = 0;
     }

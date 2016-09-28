@@ -12,29 +12,47 @@ Synchrotron::Synchrotron(uint16_t n, uint8_t p, neoPixelType t)
   cur = 0;
   pxl->begin();
   pxl->show();
+
+  // Inital values of 0 will make it look like it's sort of warming up
+  ticks = 0;
+  tickrate = 200;
+  r = 0;
+  g = 0;
+  b = 0;
+
   standby();
 }
 
+Synchrotron::transition(int duration, int final_tickrate, byte final_r, byte final_g, byte final_b)
+{
+  transition_length = duration;
+  transition_elapsed = 0;
+
+  dtickrate = (final_tickrate - tickrate) / (float)duration;
+  dr = (final_r - r) / (float)duration;
+  dg = (final_g - g) / (float)duration;
+  db = (final_b - b) / (float)duration;
+
+  initial_tickrate = tickrate;
+  initial_r = r;
+  initial_g = g;
+  initial_b = b;
+}
+
 Synchrotron::standby() {
-  tickrate = 12;
-  ticks = 0;
-  r = brightness;
-  g = 0;
-  b = 0;
+  transition(400, 12, brightness, 0, 0);
 }
 
 Synchrotron::charge() {
-  tickrate = 2;
-  ticks = 0;
-  r = brightness;
-  g = brightness / 8;
-  b = 0;
+  transition(400, 2, brightness, brightness/8, 0);
 }
 
 Synchrotron::fire() {
+  transition(40, 1, brightness/8, brightness/4, brightness/2);
 }
 
 Synchrotron::discharge() {
+  standby();
 }
 
 Synchrotron::tick(unsigned long jiffies) {
@@ -51,8 +69,16 @@ Synchrotron::tick(unsigned long jiffies) {
   pxl->show();
 
   ticks += 1;
-  if (ticks == tickrate) {
-    ticks = 0;
+  if (ticks >= tickrate) {
     cur = (cur + 1) % npixels;
+    ticks = 0;
+  }
+
+  if (transition_length > transition_elapsed) {
+    tickrate = initial_tickrate + (dtickrate * transition_elapsed);
+    r = initial_r + (dr * transition_elapsed);
+    g = initial_g + (dg * transition_elapsed);
+    b = initial_b + (db * transition_elapsed);
+    transition_elapsed += 1;
   }
 }
