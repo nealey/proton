@@ -14,9 +14,12 @@ class Synchrotron {
   int transition_length, transition_elapsed;
   int initial_tickrate, initial_r, initial_g, initial_b;
   float dtickrate, dr, dg, db;
+  float ftickrate;
 public:
   Synchrotron(uint16_t n, uint8_t p=6, neoPixelType t=NEO_GRB + NEO_KHZ800);
   transition(int duration, int final_tickrate, byte final_r, byte final_g, byte final_b);
+  bool transitioned();
+  float speed();
   standby();
   charge();
   fire();

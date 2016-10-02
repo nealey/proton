@@ -39,12 +39,22 @@ Synchrotron::transition(int duration, int final_tickrate, byte final_r, byte fin
   initial_b = b;
 }
 
+bool
+Synchrotron::transitioned() {
+  return (transition_elapsed >= transition_length);
+}
+
+float
+Synchrotron::speed() {
+  return 1 / ftickrate;
+}
+
 Synchrotron::standby() {
   transition(400, 12, brightness, 0, 0);
 }
 
 Synchrotron::charge() {
-  transition(400, 2, brightness, brightness/8, 0);
+  transition(700, 2, brightness, brightness/8, 0);
 }
 
 Synchrotron::fire() {
@@ -75,10 +85,11 @@ Synchrotron::tick(unsigned long jiffies) {
   }
 
   if (transition_length > transition_elapsed) {
-    tickrate = initial_tickrate + (dtickrate * transition_elapsed);
+    transition_elapsed += 1;
+    ftickrate = initial_tickrate + (dtickrate * transition_elapsed);
+    tickrate = ftickrate;
     r = initial_r + (dr * transition_elapsed);
     g = initial_g + (dg * transition_elapsed);
     b = initial_b + (db * transition_elapsed);
-    transition_elapsed += 1;
   }
 }
